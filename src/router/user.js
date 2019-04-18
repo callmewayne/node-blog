@@ -3,13 +3,21 @@ const { SuccessModel,ErrorModel}  = require('../model/resModel')
 
 const handelUserRouter = (req, res) => {
     const method = req.method
-    console.log(req)
-    if(method ==='POST' && req.path ==='/api/user/login'){
-        const {username,password}   = JSON.parse(req.body) 
+    if(method ==='GET' && req.path ==='/api/user/login'){
+        // const {username,password}   = JSON.parse(req.body) 
+        const {username,password}   = req.query
         let result = loginCheck(username,password)
         return result.then(data=>{
             if(data.username){
-                return new SuccessModel(data)
+
+                req.session.username = data.username
+                req.session.realname = data.realname
+                //httpOnly只允许后端修改cookie,expires设置过期时间
+             //   res.setHeader('Set-Cookie',`username=${data.username}; path=/ ;httpOnly; expires=${getCookieExpires()}`)
+                return  new SuccessModel({
+                    session:req.session,
+
+                })
              }else{
                  return new ErrorModel('登陆失败')
              }
@@ -20,10 +28,10 @@ const handelUserRouter = (req, res) => {
     }
     
     if(method ==='GET' && req.path==='/api/user/login-test'){
-        if(req.cookie.username){
-            return new SuccessModel()
+        if(req.session.username){
+            return Promise.resolve(new SuccessModel()) 
         }else{
-            return new ErrorModel('尚未登录')
+            return Promise.resolve(new ErrorModel('尚未登录')) 
 
         }
     }

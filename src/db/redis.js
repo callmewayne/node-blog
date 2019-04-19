@@ -8,7 +8,7 @@ redisClient.on('error',err=>{
 })
 
 const set = (key,val)=>{
-    if(typeof val === 'obejct'){
+    if(typeof val === 'object'){
         val = JSON.stringify(val)
     }
 
@@ -40,5 +40,6 @@ const get = (key)=>{
 }
 
 module.exports = {
-
+    set,
+    get
 }

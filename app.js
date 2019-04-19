@@ -1,7 +1,8 @@
 const handleBlogRouter = require('./src/router/blog')
 const handleUserRouter = require('./src/router/user')
+const { set, get} = require('./src/db/redis')
 const querystring = require('querystring')
-const SESSION_DATA = {}
+// const SESSION_DATA = {}
 const getCookieExpires = ()=>{
     let d = new Date()
     d.setTime(d.getTime() +(24*60*60*1000) )
@@ -53,25 +54,49 @@ const serverHandle = (req, res) => {
 
         req.cookie[key] = value
     });
+
+    //解析session 使用redis
     var needSetCookie = false
     var userId = req.cookie.userid
-    //设置
-    if (userId) {
-        if (!SESSION_DATA[req.cookie]) {
-            SESSION_DATA[userId] = {}
-            req.session = SESSION_DATA[userId]
-        }
-    } else {
-        needSetCookie = true
-        userId = `${Date.now()}_${Math.random()}`
-        SESSION_DATA[userId] = {}
-    }
-    req.session = SESSION_DATA[userId]
+  if(!userId){
+    needSetCookie = true
+    userId = `${Date.now()}_${Math.random()}`
+    //初始化 redis 中的 session
+    set(userId,{})
+  }
+  //获取session
+  req.sessionId = userId
+  get(req.sessionId).then(sessionData=>{
+     if(sessionData==null){
+         //初始化session中redis的值
+        set(req.sessionId,{})
+        //设置session
+        req.session = {}
+     }else{
+          //设置session
+        req.session = sessionData 
+     }
+     //处理postData
+     return  getPostData(req)
+  })
 
+    // 解析session 
+    // var needSetCookie = false
+    // var userId = req.cookie.userid
+    // if (userId) {
+    //     if (!SESSION_DATA[req.cookie]) {
+    //         SESSION_DATA[userId] = {}
+    //         req.session = SESSION_DATA[userId]
+    //     }
+    // } else {
+    //     needSetCookie = true
+    //     userId = `${Date.now()}_${Math.random()}`
+    //     SESSION_DATA[userId] = {}
+    // }
+    // req.session = SESSION_DATA[userId]
     //处理postData
-    getPostData(req).then(postData => {
+   .then(postData => {
         req.body = postData
-
         //处理blog路由
         const blogResult = handleBlogRouter(req, res)
         if (blogResult) {

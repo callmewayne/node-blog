@@ -1,12 +1,12 @@
-const { loginCheck }  = require('../controller/user')
+const { login }  = require('../controller/user')
 const { SuccessModel,ErrorModel}  = require('../model/resModel')
 const {set } = require('../db/redis')
 const handelUserRouter = (req, res) => {
     const method = req.method
-    if(method ==='GET' && req.path ==='/api/user/login'){
-        // const {username,password}   = JSON.parse(req.body) 
-        const {username,password}   = req.query
-        let result = loginCheck(username,password)
+    if(method ==='POST' && req.path ==='/api/user/login'){
+        const {username,password}   = JSON.parse(req.body) 
+       // const {username,password}   = req.query
+        let result = login(username,password)
         return result.then(data=>{
             if(data.username){
    

@@ -12,22 +12,7 @@ const getList = (author,keyword)=>{
     sql += `order by createtime desc`
 
      return exec(sql)
-    // return [
-    //     {
-    //         id:1,
-    //         title:'标题A',
-    //         content:'内容A',
-    //         author:'wayne',
-    //         createTime:1554779934902
-    //     },
-    //     {
-    //         id:2,
-    //         title:'标题B',
-    //         content:'内容b',
-    //         author:'lisi',
-    //         createTime:1554779958236
-    //     },
-    // ]
+
 }
 
 
@@ -37,13 +22,7 @@ const getDetail = (id)=>{
         return rows[0]
     })
 
-    // return {
-    //     id:1,
-    //     title:'标题A',
-    //     content:'内容A',
-    //     author:'wayne',
-    //     createTime:1554779934902
-    // }
+
 }
 
 const newBlog = (blogData={})=>{
@@ -62,10 +41,7 @@ if(blogData.title){
     })
 }
 
-// return {
-//     id:3, //表示新建博客，插入到数据表里面的 id
-//     blogData
-// }
+
 }
 
 const updateBlog = (id,blogData={})=>{
@@ -73,7 +49,7 @@ const updateBlog = (id,blogData={})=>{
     //blogData 是一个博客对象，包含 title content 属性
     blogData = JSON.parse(blogData)
     const sql = `update blogs set title='${blogData.title}',content='${blogData.content}' 
-    where id=${blogData.id}`
+    where id=${id}`
     return exec(sql).then(updateBlog=>{
         //影响的行数
         if(updateBlog.affectedRows>0){

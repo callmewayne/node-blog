@@ -19,6 +19,15 @@ const handleBlogRouter = (req, res) => {
     if (method === 'GET' && path === '/api/blog/list') {
         let author = req.query.author || ''
         let keyword = req.query.keyword || ''
+
+        if(req.query.isadmin){
+            const loginCheckResult = loginCheck(req)
+            if(loginCheckResult){
+                //未登录
+                return loginCheckResult
+            }
+            author = req.session.username
+        }
         let result = getList(author,keyword)
       return result.then(listData=>{
          console.log(listData)
@@ -59,6 +68,7 @@ const handleBlogRouter = (req, res) => {
             //未登录
             return loginCheckResult
         }
+        req.body.id = id
         let result = updateBlog(id,req.body)
        return result.then(val=>{
             if(val){

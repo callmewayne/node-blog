@@ -38,7 +38,7 @@ const getPostData = (req) => {
 }
 
 const serverHandle = (req, res) => {
-    //记录access。log
+    //记录access.log
 
     access(`${req.method} -- ${req.url} -- ${req.headers['user-agent']} -- ${new Date} `)
     //设置返回格式

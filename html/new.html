@@ -26,7 +26,7 @@
     </style>
 </head>
 <body>
-    <h1 style="border-bottom: 1px solid #ccc; padding-bottom: 10px;">创建博客</h1>
+    <h1 style="border-bottom: 1px solid #ccc; padding-bottom: 10px;">创建文章</h1>
     <div>
         <div class="title-wrapper">
             <input id="text-title">
@@ -60,6 +60,7 @@
         $btnCreate.click(() => {
             const title = $textTitle.val().trim()
             const content = $textContent.val().trim()
+            var author = ''
             if (title === '' || content === '') {
                 alert('标题或内容不能为空')
                 return
@@ -68,7 +69,8 @@
             const url = '/api/blog/new'
             const data = {
                 title,
-                content
+                content,
+                author
             }
             post(url, data).then(res => {
                 if (res.errno !== 0) {

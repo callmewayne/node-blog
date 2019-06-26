@@ -48,13 +48,14 @@ const handleBlogRouter = (req, res) => {
 
     //新建一篇博文
     if (method === 'POST' && path === '/api/blog/new') {
-          const blogData = req.body
+      let   blogData = JSON.parse(req.body)
           const loginCheckResult = loginCheck(req)
           if(loginCheckResult){
               //未登录
               return loginCheckResult
           }
-          blogData.author = req.session.username || ""
+   
+          blogData["author"] =  req.session.username || ''
           let result = newBlog(blogData)
           return result.then(data=>{
             return new SuccessModel(data)
@@ -68,6 +69,7 @@ const handleBlogRouter = (req, res) => {
             //未登录
             return loginCheckResult
         }
+
         req.body.id = id
         let result = updateBlog(id,req.body)
        return result.then(val=>{

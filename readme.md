@@ -32,9 +32,7 @@ app.js作为业务层文件，主要用来处理服务器端请求，对请求�
 
 router文件夹用来做路由的处理，封装API接口，针对不同的path，请求方式调用不同的数据接口，
 
-
 controller层用来为router提供方法对数据库层的crud操作，每个方法内部注入参数，封装sql语句，
-
 
 model层，为router层提供返回值模板，设置返回data，code，message等
 
@@ -107,5 +105,8 @@ nginx可以作为静态服务，反向代理
 从流中读写文件，给文件添加内容
 
 
+启动步骤：   
+1. npm run dev
+2. 在redis文件夹运行 redis-server.exe
 
 

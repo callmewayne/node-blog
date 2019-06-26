@@ -1,5 +1,5 @@
 const { exec}  = require('../db/mysql')
-
+const xss = require('xss')
 const getList = (author,keyword)=>{
    //当author，keyword不存在时，where就会报错，所以要加 where 1=1
    let sql = `select * from blogs where 1=1 `
@@ -26,10 +26,14 @@ const getDetail = (id)=>{
 }
 
 const newBlog = (blogData={})=>{
-    blogData = JSON.parse(blogData)
+  let title = xss(blogData.title) 
+  let content = xss(blogData.content) 
+  let author = xss(blogData.author) 
+  let createtime =Date.now()
+ 
 //blogData是一个博客对象，包含title content 属性
 const sql = `insert into blogs (title,content,createtime,author) 
-values ('${blogData.title}','${blogData.content}',${Date.now()},'${blogData.author}')`
+values ('${title}','${content}',${createtime},'${author}')`
 if(blogData.title){
     return exec(sql).then(insertData=>{
         if(insertData.insertId){
